@@ -8,19 +8,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  title   String
-  content String
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("posts")
-}
+/**
+ * model Post {
+ * id        String   @id @default(uuid())
+ * createdAt DateTime @default(now())
+ * updatedAt DateTime @updatedAt
+ * title   String
+ * content String
+ * userId String
+ * user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+ * @@map("posts")
+ * }
+ */
 
 model User {
   id        String   @id
@@ -34,7 +33,7 @@ model User {
 
   sessions Session[]
   accounts Account[]
-  Post     Post[]
+  // Post     Post[]
 
   @@map("users")
 }
