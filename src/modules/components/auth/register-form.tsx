@@ -1,12 +1,10 @@
 "use client";
 
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import z from "zod";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema, RegisterSchemaType } from "@/config/types";
+import { registerSchema, RegisterSchemaType } from "@/schemas/auth-schemas";
 import { useRouter } from "next/navigation";
-import { signUp } from "@/lib/auth-client";
 import { routes } from "@/config/routes";
 import { toast } from "sonner";
 
@@ -17,158 +15,244 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+} from "@/components/ui/field";
+import { registerAction } from "@/_actions/auth-actions";
+import { FaGoogle } from "react-icons/fa";
 
 const RegisterForm = () => {
-  const [pendingLogin, startLoginTransition] = useTransition();
+  const [pendingRegister, startRegisterTransition] = useTransition();
+  const [isGooglePending, startGoogleTransition] = useTransition();
 
   const router = useRouter();
 
-  const form = useForm<z.infer<RegisterSchemaType>>({
+  const form = useForm<RegisterSchemaType>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
+    mode: "onBlur",
   });
   const { handleSubmit, control, reset } = form;
 
-  const onSubmit = (values: z.infer<RegisterSchemaType>) => {
-    startLoginTransition(async () => {
-      const { name, email, password } = values;
-      await signUp.email(
-        { name: name, email: email, password: password },
-        {
-          onRequest: () => {},
-          onResponse: () => {},
-          onError: (ctx) => {
-            toast.error(ctx.error.message);
-          },
-          onSuccess: () => {
-            toast.success("Registered successfully, you can log in now!");
-            router.push(routes.login);
-          },
-        },
-      );
+  const onSubmit = (data: RegisterSchemaType) => {
+    startRegisterTransition(async () => {
+      const response = await registerAction(data);
+      if (response.success) {
+        toast.success(response.message);
+        reset();
+        router.push(routes.login);
+      } else {
+        toast.error(response.message);
+      }
     });
   };
 
+  const loginWithGoogle = () => {
+    startGoogleTransition(async () => {});
+  };
+
   return (
-    <div className="flex w-full flex-col gap-6 sm:w-sm md:w-md">
-      <Card>
-        <CardHeader>
-          <CardTitle>Welcome back!</CardTitle>
+    <div className="flex w-full flex-col gap-4 sm:w-sm">
+      <Card className="p-2 py-6">
+        <CardHeader className="mb-0 text-center">
+          <CardTitle className="text-xl">Create an account</CardTitle>
           <CardDescription>
-            Enter your email and password to log in to your account
+            Enter your email below to create your account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
+          <form id="register-user" onSubmit={handleSubmit(onSubmit)}>
+            <FieldGroup className="gap-2">
+              {/* FULL NAME */}
+              <Controller
                 control={control}
                 name="name"
-                render={({ field }) => {
+                render={({ field, fieldState }) => {
                   return (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter your name"
-                          autoComplete="off"
-                          {...field}
+                    <Field className="gap-1">
+                      <FieldLabel htmlFor="name">Name</FieldLabel>
+                      <Input
+                        id="name"
+                        type="text"
+                        placeholder="Enter your name"
+                        autoComplete="off"
+                        aria-invalid={fieldState.invalid}
+                        {...field}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError
+                          errors={[fieldState.error]}
+                          className="text-xs italic"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                      )}
+                    </Field>
                   );
                 }}
               />
-              <FormField
+              {/* EMAIL */}
+              <Controller
                 control={control}
                 name="email"
-                render={({ field }) => {
+                render={({ field, fieldState }) => {
                   return (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter your email"
-                          autoComplete="off"
-                          {...field}
+                    <Field className="gap-1">
+                      <FieldLabel htmlFor="name">Email</FieldLabel>
+                      <Input
+                        id="email"
+                        type="text"
+                        placeholder="m@example.com"
+                        autoComplete="off"
+                        aria-invalid={fieldState.invalid}
+                        {...field}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError
+                          errors={[fieldState.error]}
+                          className="text-xs italic"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                      )}
+                      <FieldDescription className="text-xs tracking-tight">
+                        We will use this to contact you. We will not share your
+                        email with anyone else.
+                      </FieldDescription>
+                    </Field>
                   );
                 }}
               />
-              <FormField
+              {/* PASSWORD */}
+              <Controller
                 control={control}
                 name="password"
-                render={({ field }) => {
+                render={({ field, fieldState }) => {
                   return (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Enter your password"
-                          autoComplete="off"
-                          {...field}
+                    <Field className="gap-1">
+                      <FieldLabel htmlFor="password">Password</FieldLabel>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        autoComplete="off"
+                        aria-invalid={fieldState.invalid}
+                        {...field}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError
+                          errors={[fieldState.error]}
+                          className="text-xs italic"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                      )}
+                      <FieldDescription className="text-xs tracking-tight">
+                        Must be at least 8 characters long.
+                      </FieldDescription>
+                    </Field>
                   );
                 }}
               />
-              <div className="mt-8 flex w-full flex-row items-center justify-between gap-2">
+              {/* CONFIRM PASSWORD */}
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field, fieldState }) => {
+                  return (
+                    <Field className="gap-1">
+                      <FieldLabel htmlFor="confirmPassword">
+                        Confirm Password
+                      </FieldLabel>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="Confirm your password"
+                        autoComplete="off"
+                        aria-invalid={fieldState.invalid}
+                        {...field}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError
+                          errors={[fieldState.error]}
+                          className="text-xs italic"
+                        />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+            </FieldGroup>
+            <div className="mt-8 flex w-full flex-col items-center justify-between gap-2">
+              <Button
+                size="default"
+                className="w-full text-white"
+                type="submit"
+                variant="default"
+                form="register-user"
+                disabled={pendingRegister}
+              >
+                {pendingRegister ? (
+                  <div className="flex flex-row items-center justify-center gap-2">
+                    <Loader2 className="size-3.5 animate-spin" />
+                    <span>Pending...</span>
+                  </div>
+                ) : (
+                  <div className="flex flex-row items-center justify-center gap-2">
+                    <LogIn className="animage-spin size-3.5" />
+                    <span>Register</span>
+                  </div>
+                )}
+              </Button>
+              <div className="flex w-full justify-end">
                 <Button
                   size="sm"
-                  className="w-full flex-1"
+                  className="text-xs"
                   type="button"
-                  variant="secondary"
-                  disabled={pendingLogin}
+                  variant="link"
+                  disabled={pendingRegister}
                   onClick={() => {
                     reset();
                   }}
                 >
-                  Reset
-                </Button>
-                <Button
-                  size="sm"
-                  className="w-full flex-1 text-white"
-                  type="submit"
-                  variant="default"
-                  disabled={pendingLogin}
-                >
-                  {pendingLogin ? (
-                    <div className="flex flex-row items-center justify-center gap-2">
-                      <Loader2 className="size-3.5 animate-spin" />
-                      <span>Loading...</span>
-                    </div>
-                  ) : (
-                    <div className="flex flex-row items-center justify-center gap-2">
-                      <LogIn className="animage-spin size-3.5" />
-                      <span>Register</span>
-                    </div>
-                  )}
+                  Reset Form
                 </Button>
               </div>
-            </form>
-          </Form>
+            </div>
+          </form>
+          <div className="pt-4 pb-6">
+            <FieldSeparator className="[&>span]:bg-card">
+              Or continue with
+            </FieldSeparator>
+          </div>
+          <Field>
+            <Button
+              variant="outline"
+              className="w-full"
+              type="button"
+              disabled={isGooglePending}
+              onClick={loginWithGoogle}
+            >
+              {isGooglePending ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="size-3.5 animate-spin" />
+                  <span>Loading...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <FaGoogle />
+                  <span>Sign In with Google</span>
+                </div>
+              )}
+            </Button>
+          </Field>
         </CardContent>
       </Card>
     </div>

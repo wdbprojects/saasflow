@@ -1,17 +1,13 @@
 import { Card, CardHeader } from "@/components/ui/card";
-import { routes } from "@/config/routes";
 import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-utils";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 const DashboardPage = async () => {
+  await requireAuth();
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-
-  if (!session) {
-    redirect(routes.login);
-  }
 
   return (
     <div className="flex w-full flex-col justify-between pt-[4rem] pb-[0rem]">

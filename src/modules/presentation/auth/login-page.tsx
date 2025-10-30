@@ -1,19 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { routes } from "@/config/routes";
-import { auth } from "@/lib/auth";
+import { requireUnauth } from "@/lib/auth-utils";
 import LoginForm from "@/modules/components/auth/login-form";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const LoginPage = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (session) {
-    redirect(routes.dashboard);
-  }
+  await requireUnauth("home");
 
   return (
     <div>

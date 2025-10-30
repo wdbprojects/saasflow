@@ -21,8 +21,9 @@ const SignOutButton = () => {
             toast.error(ctx.error.message);
           },
           onSuccess: () => {
-            toast.warning("User signed out successfully");
+            toast.info("User signed out successfully");
             router.push(routes.home);
+            router.refresh();
           },
         },
       });
@@ -31,7 +32,7 @@ const SignOutButton = () => {
 
   return (
     <Button
-      variant="destructive"
+      variant="secondary"
       size="sm"
       className="w-[150px]"
       onClick={handleLogout}
