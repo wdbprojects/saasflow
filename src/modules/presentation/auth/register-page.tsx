@@ -1,9 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { routes } from "@/config/routes";
-import RegisterForm from "@/modules/components/auth/register-form";
 import Link from "next/link";
+import RegisterForm from "@/modules/components/auth/register-form";
+import { requireUnauth } from "@/lib/auth-utils";
+import { routes } from "@/config/routes";
+import { Button } from "@/components/ui/button";
 
-const RegisterPage = () => {
+const RegisterPage = async () => {
+  await requireUnauth("about");
   return (
     <div>
       <RegisterForm />
