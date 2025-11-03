@@ -24,7 +24,7 @@ export const registerSchema = z
     (data) => {
       return data.password === data.confirmPassword;
     },
-    { message: "Password don not match", path: ["confirmPassword"] },
+    { message: "Passwords don&apos;t match", path: ["confirmPassword"] },
   );
 
 export type RegisterSchemaType = z.infer<typeof registerSchema>;

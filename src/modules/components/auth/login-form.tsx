@@ -196,7 +196,7 @@ const RegisterForm = () => {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <FaGoogle />
+                  <FaGoogle className="size-3" />
                   <span>Sign In with Google</span>
                 </div>
               )}

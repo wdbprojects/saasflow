@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Loader2, LogIn } from "lucide-react";
+import { Loader2, LogIn, SquarePen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -206,7 +206,7 @@ const RegisterForm = () => {
                   </div>
                 ) : (
                   <div className="flex flex-row items-center justify-center gap-2">
-                    <LogIn className="animage-spin size-3.5" />
+                    <SquarePen className="size-3.5" />
                     <span>Register</span>
                   </div>
                 )}
@@ -247,7 +247,7 @@ const RegisterForm = () => {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <FaGoogle />
+                  <FaGoogle className="size-3" />
                   <span>Sign In with Google</span>
                 </div>
               )}
