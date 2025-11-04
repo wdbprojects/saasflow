@@ -6,7 +6,9 @@
     "dev": "prisma generate && next dev --turbopack",
     "build": "prisma generate && next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "inngest:dev": "inngest-cli dev",
+    "dev:all": "mprocs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -32,6 +34,9 @@
     "client-only": "^0.0.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
+    "global": "^4.4.0",
+    "inngest": "^3.44.5",
+    "inngest-cli": "^1.13.2",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.546.0",
     "next": "16.0.1",
