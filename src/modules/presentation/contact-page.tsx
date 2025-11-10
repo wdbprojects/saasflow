@@ -4,8 +4,8 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 
 const ContactPage = async () => {
-  const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
+  // const queryClient = getQueryClient();
+  // void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
 
   return (
     <div className="block w-full pt-[4rem] pb-[0rem]">
@@ -17,11 +17,11 @@ const ContactPage = async () => {
           illo beatae!
         </p>
         <div className="rounded-sm border p-3">
-          <HydrationBoundary state={dehydrate(queryClient)}>
+          {/* <HydrationBoundary state={dehydrate(queryClient)}>
             <Suspense fallback={<p>Loading...</p>}>
               <SuspenseClientTRPC />
             </Suspense>
-          </HydrationBoundary>
+          </HydrationBoundary> */}
         </div>
       </div>
     </div>
