@@ -17,9 +17,7 @@ export const appRouter = createTRPCRouter({
     //   model: google("gemini-2.5-flash"),
     //   prompt: "Write an egplant lasagna recipe for 4 people",
     // });
-
     await inngest.send({ name: "execute/ai" });
-
     return { success: true, message: "Job queued" };
   }),
 

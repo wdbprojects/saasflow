@@ -51,7 +51,6 @@ const HeaderDashboard = async () => {
         </div>
         {/* //INFO: BUTTONS & AUTH */}
         <div className="flex flex-shrink-0 items-center gap-4 p-1">
-          <DarkMode />
           {!session ? (
             <Button variant="outline" size="sm" asChild>
               <Link href={routes.login}>Login</Link>
@@ -59,6 +58,7 @@ const HeaderDashboard = async () => {
           ) : (
             <SignOutButton />
           )}
+          <DarkMode />
         </div>
       </div>
     </header>

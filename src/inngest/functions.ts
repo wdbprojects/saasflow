@@ -1,7 +1,7 @@
 import { inngest } from "@/inngest/client";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createAnthropic } from "@ai-sdk/anthropic";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
 
 const google = createGoogleGenerativeAI({});
@@ -17,27 +17,27 @@ export const execute = inngest.createFunction(
       "gemini-generate-text",
       generateText,
       {
+        model: google("gemini-2.5-flash"),
         system: "You are a helpful assistant.",
         prompt: "What is 2 + 2 really",
-        model: google("gemini-2.5-flash"),
       },
     );
     const { steps: openaiSteps } = await step.ai.wrap(
       "openai-generate-text",
       generateText,
       {
+        model: openai("gpt-5-turbo"),
         system: "You are a helpful assistant.",
         prompt: "What is 2 + 2 really",
-        model: openai("gpt-5-turbo"),
       },
     );
     const { steps: anthropicSteps } = await step.ai.wrap(
       "anthropic-generate-text",
       generateText,
       {
+        model: anthropic("claude-sonnet-4-5"),
         system: "You are a helpful assistant.",
         prompt: "What is 2 + 2 really",
-        model: anthropic("claude-sonnet-4-5"),
       },
     );
     return { geminiSteps, openaiSteps, anthropicSteps };

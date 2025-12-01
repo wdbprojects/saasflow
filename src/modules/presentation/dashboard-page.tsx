@@ -1,10 +1,8 @@
 import { Card, CardHeader } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
-import { requireAuth } from "@/lib/auth-utils";
 import { headers } from "next/headers";
 
 const DashboardPage = async () => {
-  await requireAuth();
   const session = await auth.api.getSession({
     headers: await headers(),
   });
